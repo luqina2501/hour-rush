@@ -1,1 +1,2 @@
-streamlit
+python 3.12.x or higher
+pygame

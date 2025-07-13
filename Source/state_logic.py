@@ -1,3 +1,5 @@
+expanded_node = 0
+
 def is_legit(state = "////////////////////////////////////"):
     length = len(state)
     if length != 36:
@@ -40,9 +42,9 @@ def is_legit(state = "////////////////////////////////////"):
 def is_goal(state = "////////////////////////////////////"):
     return (state[17] == 'a')
 
-expanded_node = 0
 def expand(state = "////////////////////////////////////"):
-    ++expanded_node
+    global expanded_node
+    expanded_node += 1
     succs = []
     coss = []
 

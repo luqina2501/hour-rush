@@ -1,9 +1,18 @@
 # Install library
 
-+ Streamlit
++ pygame
   
   ```bash
-  pip install streamlit
+  pip install pygame
   ```
+
+# Run game
+
+```py
+cd {rush-hour-folder}/Source
+python3 UI.py
+or
+./UI.py
+```
 
 
