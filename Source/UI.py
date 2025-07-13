@@ -13,13 +13,12 @@ pg.display.set_caption("RUSH HOUR")
 # Create a clock to control the frame rate.
 clock = pg.time.Clock()
 
-# Load the images for the game.
-# These images are in the 'pics' directory.
+# Load the imagespip e 'pics' directory.
 surface = pg.image.load('pics/map.png').convert()
 ui1=pg.image.load('pics/bfs.png').convert()
 ui2=pg.image.load('pics/dfs.png').convert()
 ui3=pg.image.load('pics/ucs.png').convert()
-ui4=pg.image.load('pics/a*.png').convert()
+ui4=pg.image.load('pics/a_.png').convert()
 stopBut=pg.image.load('pics/stop.png').convert()
 red=pg.image.load('pics/red.png').convert()
 blue_hor=pg.image.load('pics/blue.png').convert()
@@ -29,7 +28,7 @@ yellow_vert=pg.transform.rotate(yellow_hor, 90)
 
 # Align game surface and UI surface
 surface_rect = surface.get_rect(midleft=screen.get_rect().midleft)
-ui = pg.Surface((420, 640))  # Create a surface for the UI
+ui = pg.Surface((420, 640))  # Create a surface for the UIz
 ui_rect = ui.get_rect(midright=screen.get_rect().midright)
 
 # Areas for buttons in the UI

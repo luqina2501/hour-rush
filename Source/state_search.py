@@ -53,7 +53,7 @@ def dls(state, depth, came_from, visited):
     visited.remove(state)
     return [], float('inf')
 
-def ids(start, max_depth = 50):
+def ids(start, max_depth = 34):
     for depth in range(max_depth):
         came_from = {}
         visited = set()
@@ -87,32 +87,33 @@ def ucs(start):
 
 # a* zone
 def h(state):
-    if len(state) != 36 or not sl.islegit(state):
+    if len(state) != 36 or not sl.is_legit(state):
         return 0
 
     board = [0] * 36
     a_location = 17
 
     for i in range(36):
-        if state[i] == 'a':
+        ch = state[i]
+        if ch == 'a':
             if 12 <= i <= 17:
                 a_location = i
             for k in range(i - 1, i + 1):
                 if 0 <= k < 36:
                     board[k] = 2
-        elif state[i] == 'b':
+        elif ch == 'b':
             for k in range(i - 1, i + 1):
                 if 0 <= k < 36:
                     board[k] = 2
-        elif state[i] == 'c':
+        elif ch == 'c':
             for k in range(i - 6, i + 1, 6):
                 if 0 <= k < 36:
                     board[k] = 2
-        elif state[i] == 'm':
+        elif ch == 'm':
             for k in range(i - 2, i + 1):
                 if 0 <= k < 36:
                     board[k] = 3
-        elif state[i] == 'n':
+        elif ch == 'n':
             for k in range(i - 12, i + 1, 6):
                 if 0 <= k < 36:
                     board[k] = 3
@@ -130,17 +131,18 @@ def a_star(start):
     while frontier:
         _, cost, state = heapq.heappop(frontier)
     
-    if sl.is_goal(state):
-        path = reconstruct_path(came_from, state)
-        return path, cost
+        if sl.is_goal(state):
+            path = reconstruct_path(came_from, state)
+            return path, cost
     
-    succs, costs = sl.expand(state)
-    for succ, move_cost in zip(succs, costs):
-        new_cost = cost + move_cost
-        if succ not in cost_so_far or new_cost < cost_so_far[succ]:
-            cost_so_far[succ] = new_cost
-            priority = new_cost + h(succ)
-            heapq.heappush(frontier, (priority, new_cost, succ))
-            came_from[succ] = state
+        succs, costs = sl.expand(state)
+    
+        for succ, move_cost in zip(succs, costs):
+            new_cost = cost + move_cost
+            if succ not in cost_so_far or new_cost < cost_so_far[succ]:
+                cost_so_far[succ] = new_cost
+                priority = new_cost + h(succ)
+                heapq.heappush(frontier, (priority, new_cost, succ))
+                came_from[succ] = state
     
     return [], float('inf')

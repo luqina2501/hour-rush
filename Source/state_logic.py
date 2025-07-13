@@ -10,13 +10,11 @@ def is_legit(state = "////////////////////////////////////"):
         ch = state [i]
         if ch == 'a' or ch == 'b':
             if i - 1 < 0 or str[i - 1] != '/':
-                print(f"Invalid position: {ch}")
                 return False
             str[i - 1] = ch
         
         elif ch == 'c':
             if i - 6 < 0 or str[i - 6] != '/':
-                print(f"Invalid position: {ch}")
                 return False
             str[i - 6] = '2'
         
@@ -25,18 +23,15 @@ def is_legit(state = "////////////////////////////////////"):
                 return False
             for k in range (i - 2, i):
                 if i - 2 < 0 or any(str[k] != '/' for k in range(i - 2, i)):
-                    print(f"Invalid position: {ch}")
                     return False
             str[i - 1] = '3'
             str[i - 2] = '3'
 
         elif ch == 'n':
             if i -  12 < 0:
-                print(f"Invalid position: {ch}")
                 return False
             for k in range (i - 12, i, 6):
                 if i - 12 < 0 or any(str[k] != '/' for k in range(i - 12, i, 6)):
-                    print(f"Invalid position: {ch}")
                     return False
             str[i - 6] = '3'
             str[i - 12] = '3'
@@ -45,7 +40,9 @@ def is_legit(state = "////////////////////////////////////"):
 def is_goal(state = "////////////////////////////////////"):
     return (state[17] == 'a')
 
+expanded_node = 0
 def expand(state = "////////////////////////////////////"):
+    ++expanded_node
     succs = []
     coss = []
 
