@@ -1,29 +1,125 @@
-import streamlit as st
-import pandas as pd
+import pygame as pg
 
-def show_state(state = "////////////////////////////////////"):
-    if len(state) != 36:
-        st.error("String length must equal 36!")
-    
-    st.title("demo UI")
+pg.init()
+origin = (261, 131)  # Original position for the blocks (x, y ) of first block
+move = 70  # Move distance for each block in pixels
 
-    cells = {
-        '/':'⬜',
-        'a':'🟧',
-        'b':'🟦',
-        'c':'🟦',
-        # reserved space
-        'm':'🟨',
-        'n':'🟨'
-    }
+# Initialize the game window.
+screen = pg.display.set_mode((1440,640))
 
-    st.markdown("### UI_1:")
-    bstr = ""
-    for i in range(36):
-        if i % 6 == 0:
-            bstr += '\n'
-        bstr += cells.get(state[i], '❌')
-    
-    st.markdown(f"```{bstr}\n```")
+# Set the title of the game window.
+pg.display.set_caption("RUSH HOUR")
 
-show_state("/////////////a/////////////////m////")
+# Create a clock to control the frame rate.
+clock = pg.time.Clock()
+
+# Load the images for the game.
+# These images are in the 'pics' directory.
+surface = pg.image.load('pics/map.png').convert()
+ui1=pg.image.load('pics/bfs.png').convert()
+ui2=pg.image.load('pics/dfs.png').convert()
+ui3=pg.image.load('pics/ucs.png').convert()
+ui4=pg.image.load('pics/a*.png').convert()
+stopBut=pg.image.load('pics/stop.png').convert()
+red=pg.image.load('pics/red.png').convert()
+blue_hor=pg.image.load('pics/blue.png').convert()
+yellow_hor=pg.image.load('pics/yellow.png').convert()
+blue_vert=pg.transform.rotate(blue_hor, 90)  
+yellow_vert=pg.transform.rotate(yellow_hor, 90) 
+
+# Align game surface and UI surface
+surface_rect = surface.get_rect(midleft=screen.get_rect().midleft)
+ui = pg.Surface((420, 640))  # Create a surface for the UI
+ui_rect = ui.get_rect(midright=screen.get_rect().midright)
+
+# Areas for buttons in the UI
+play_pause_area = pg.Rect(21, 21, 170, 170).move(ui_rect.topleft) 
+restart_area = pg.Rect(231, 21, 170, 170).move(ui_rect.topleft) 
+change_search_area = pg.Rect(21, 441, 380, 80).move(ui_rect.topleft) 
+exit_area = pg.Rect(21, 541, 380, 80).move(ui_rect.topleft) 
+map_area = pg.Rect(41, 221, 340, 60).move(ui_rect.topleft)
+# Main game loop. 
+game_running = True  #game running flag
+search_algorithm = 0  # Default search algorithm
+ui_show = [ui1, ui2, ui3, ui4]  # List of UI images for different search algorithms
+play_map = 1 # Default play map
+while True:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            pg.quit()
+            raise SystemExit
+
+    # Do logic when user clicks on the screen.
+        if event.type == pg.MOUSEBUTTONDOWN:
+            mouse_pos = pg.mouse.get_pos()
+            if (exit_area).collidepoint(mouse_pos):
+                print("Exit clicked at:", mouse_pos)
+                pg.quit()
+                raise SystemExit
+            elif play_pause_area.collidepoint(mouse_pos):
+                print("Play/Pause clicked at:", mouse_pos)
+                game_running = not game_running
+            elif restart_area.collidepoint(mouse_pos):
+                print("Restart clicked at:", mouse_pos)
+                game_running = False
+                # Reset the game state here if needed
+
+
+            elif change_search_area.collidepoint(mouse_pos):
+                print("Change search algorithm clicked at:", mouse_pos)
+                if search_algorithm < 3:
+                    search_algorithm += 1
+                else:
+                    search_algorithm = 0
+            elif map_area.collidepoint(mouse_pos):
+                print("Map clicked at:", mouse_pos)
+                if mouse_pos[1] - map_area.y < 35:  
+                    play_map = 1 + ((mouse_pos[0] - map_area.x)// 68)
+                else:
+                    play_map = 6 + ((mouse_pos[0] - map_area.x)// 68)
+                print("Play map:", play_map)
+                
+                
+    # Main game logic
+
+    screen.blit(ui_show[search_algorithm], ui_rect)  # Draw the UI image on the right side of the screen
+    if game_running == True: 
+        print ("Game is running")
+        screen.blit(surface, surface_rect)
+        #Read a string state to define the positions of the blocks.
+        # This string can be modified to change the positions of the blocks.
+        # 'a' for red, 'b' for blue horizontal, 'c' for blue vertical,
+        # 'm' for yellow horizontal, 'n' for yellow vertical.
+        # The string is divided into 6 columns and 6 rows, with each character representing
+        stringState = '/////////////a/////////////////m////'
+        for index, char in enumerate(stringState):
+            if char == 'a':
+                red_rect = red.get_rect()
+                red_rect.x = origin[0] + (index % 6)*move  # Horizontal position based on index
+                red_rect.y = origin[1] + (index // 6)*move  # Vertical position
+                screen.blit(red, red_rect)
+            elif char == 'b':
+                blue_rect = blue_hor.get_rect()
+                blue_rect.x = origin[0] + (index % 6) * move  # Horizontal position based on index
+                blue_rect.y = origin[1] + (index // 6) * move  # Vertical position
+                screen.blit(blue_hor, blue_rect)
+            elif char == 'c':
+                blue_rect = blue_vert.get_rect()
+                blue_rect.x = origin[0] + (index % 6) * move  # Horizontal position based on index
+                blue_rect.y = origin[1] + (index // 6) * move  # Vertical position
+                screen.blit(blue_vert, blue_rect)
+            elif char == 'm':
+                yelllow_rect = yellow_hor.get_rect()
+                yelllow_rect.x = origin[0] + (index % 6) * move  # Horizontal position based on index
+                yelllow_rect.y = origin[1] + (index // 6) * move  # Vertical position
+                screen.blit(yellow_hor, yelllow_rect)
+            elif char == 'n':
+                yelllow_rect = yellow_vert.get_rect()
+                yelllow_rect.x = origin[0] + (index % 6) * move  # Horizontal position based on index
+                yelllow_rect.y = origin[1] + (index // 6) * move  # Vertical position
+                screen.blit(yellow_vert, yelllow_rect)
+    else:
+        screen.blit(stopBut, (21 + ui_rect.x, 21  + ui_rect.y))                 
+        print ("Game is stopped")
+    pg.display.flip()  # Refresh on-screen display
+    clock.tick(60)         # wait until next frame (at 60 FPS)

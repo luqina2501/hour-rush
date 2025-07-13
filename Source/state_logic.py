@@ -1,38 +1,45 @@
 def is_legit(state = "////////////////////////////////////"):
-    if len(state) != 36:
+    length = len(state)
+    if length != 36:
+        print(f"Invalid size: {length}")
         return False
     
     str = list(state) # muttable
 
     for i in range(36):
-        if state[i] == 'a':
+        ch = state [i]
+        if ch == 'a' or ch == 'b':
             if i - 1 < 0 or str[i - 1] != '/':
+                print(f"Invalid position: {ch}")
                 return False
-            str[i - 1] = 'A'
+            str[i - 1] = ch
         
-        if state[i] == 'b':
-            if i - 1 < 0 or str[i - 1] != '/':
-                return False
-            str[i - 1] = 'B'
-        
-        if state[i] == 'c':
+        elif ch == 'c':
             if i - 6 < 0 or str[i - 6] != '/':
+                print(f"Invalid position: {ch}")
                 return False
-            str[i - 6] = 'C'
+            str[i - 6] = '2'
         
-        if state[i] == 'm':
+        elif ch == 'm':
             if i - 2 < 0:
                 return False
             for k in range (i - 2, i):
-                if str[k] != '/':
+                if i - 2 < 0 or any(str[k] != '/' for k in range(i - 2, i)):
+                    print(f"Invalid position: {ch}")
                     return False
+            str[i - 1] = '3'
+            str[i - 2] = '3'
 
-        if state[i] == 'N':
-            if i - 12 < 0:
+        elif ch == 'n':
+            if i -  12 < 0:
+                print(f"Invalid position: {ch}")
                 return False
             for k in range (i - 12, i, 6):
-                if str[k] != '/':
+                if i - 12 < 0 or any(str[k] != '/' for k in range(i - 12, i, 6)):
+                    print(f"Invalid position: {ch}")
                     return False
+            str[i - 6] = '3'
+            str[i - 12] = '3'
     return True
 
 def is_goal(state = "////////////////////////////////////"):
@@ -49,8 +56,8 @@ def expand(state = "////////////////////////////////////"):
         'a': {'cost': 2, 'dir': 'h'},
         'b': {'cost': 2, 'dir': 'h'},
         'c': {'cost': 2, 'dir': 'v'},
-        'm': {'cost': 2, 'dir': 'h'},
-        'n': {'cost': 2, 'dir': 'v'}
+        'm': {'cost': 3, 'dir': 'h'},
+        'n': {'cost': 3, 'dir': 'v'}
     }
 
     for i in range(36):
